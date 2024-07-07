@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration status="TRACE" packages="com.example.project_api">
+    <Properties>
+        <Property name="logPattern">%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Property>
+        <Property name="logDir">logs</Property>
+
+        <Property name="LOG_EXCEPTION_CONVERSION_WORD">%xwEx</Property>
+        <Property name="LOG_LEVEL_PATTERN">%5p</Property>
+        <Property name="LOG_DATEFORMAT_PATTERN">yyyy-MM-dd HH:mm:ss.SSS</Property>
+        <Property name="CONSOLE_LOG_PATTERN">%clr{%d{${LOG_DATEFORMAT_PATTERN}}}{faint} %clr{${LOG_LEVEL_PATTERN}} %clr{%pid}{magenta} %clr{---}{faint} %clr{[%15.15t]}{faint} %clr{%-40.40c{1.}}{cyan} %clr{:}{faint} %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}</Property>
+    </Properties>
+
+    <!-- Async Appenders 정의 -->
+    <Appenders>
+        <!-- 비동기 파일 출력 (일별로 로그 파일 분할) -->
+        <Async name="AsyncFileAppender">
+            <AppenderRef ref="FileAppender"/>
+        </Async>
+
+        <!-- 비동기 에러 로그 파일 출력 -->
+        <Async name="AsyncErrorFileAppender">
+            <AppenderRef ref="ErrorFileAppender"/>
+        </Async>
+
+        <!-- 비동기 실제 콘솔 출력 -->
+        <Async name="AsyncConsoleAppender">
+            <AppenderRef ref="ConsoleAppender"/>
+        </Async>
+
+        <Async name="AsyncErrorConsoleAppender">
+            <AppenderRef ref="ErrorConsoleAppender"/>
+        </Async>
+
+        <!-- 실제 콘솔 출력 -->
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            <PatternLayout pattern="${logPattern}"/>
+        </Console>
+
+        <Console name="ErrorConsoleAppender" target="SYSTEM_ERR">
+            <PatternLayout pattern="${logPattern}"/>
+            <Filters>
+                <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </Console>
+
+        <!-- 실제 파일 출력 -->
+        <RollingFile name="FileAppender" fileName="${logDir}/app.log" filePattern="${logDir}/app-%d{yyyy-MM-dd}.log.gz">
+            <PatternLayout pattern="${logPattern}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+        </RollingFile>
+
+        <!-- 실제 에러 로그 파일 출력 -->
+        <RollingFile name="ErrorFileAppender" fileName="${logDir}/error.log"
+                     filePattern="${logDir}/error-%d{yyyy-MM-dd}.log.gz">
+            <PatternLayout pattern="${logPattern}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            <Filters>
+                <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </RollingFile>
+
+        <SlackAppender name="LogToSlack"
+               url="https://hooks.slack.com/services/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"
+               channel="#test"
+               username="dhkang">
+            <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+        </SlackAppender>
+
+        <Async name="AsyncLogToSlack" includeLocation="true">
+            <AppenderRef ref="LogToSlack"/>
+        </Async>
+    </Appenders>
+
+    <!-- Loggers 정의 -->
+    <Loggers>
+        <!-- Root Logger 정의 -->
+        <Root level="INFO">
+            <AppenderRef ref="AsyncConsoleAppender"/>
+            <AppenderRef ref="AsyncErrorConsoleAppender"/>
+        </Root>
+
+        <Logger name="com.example.project_api">
+            <AppenderRef ref="LogToSlack"/>
+            <AppenderRef ref="AsyncFileAppender"/>
+        </Logger>
+    </Loggers>
+</Configuration>
