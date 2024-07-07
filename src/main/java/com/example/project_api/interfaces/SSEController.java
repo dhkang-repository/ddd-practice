@@ -15,7 +15,7 @@ import java.util.Date;
 
 @Log4j2
 @RestController
-public class sseController {
+public class SSEController {
     private final Sinks.Many<CustomerCreatedEvent> sink = Sinks.many().multicast().onBackpressureBuffer();;
     @GetMapping(value = "/sse/stream/sting", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> sseStreamString() {
