@@ -64,6 +64,7 @@
             </Filters>
         </RollingFile>
 
+
         <xi:include href="slack-appender.xml" />
 
         <Async name="AsyncLogToSlack" includeLocation="true">
