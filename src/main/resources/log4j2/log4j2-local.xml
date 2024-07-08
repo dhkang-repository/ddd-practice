@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<Configuration status="TRACE" packages="com.example.project_api">
+<Configuration status="TRACE" xmlns:xi="http://www.w3.org/2001/XInclude"
+               name="XIncludeDemo" packages="com.example.project_api">
     <Properties>
         <Property name="logPattern">%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Property>
         <Property name="logDir">logs</Property>
@@ -63,12 +64,7 @@
             </Filters>
         </RollingFile>
 
-        <SlackAppender name="LogToSlack"
-               url="https://hooks.slack.com/services/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"
-               channel="#test"
-               username="dhkang">
-            <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
-        </SlackAppender>
+        <xi:include href="slack-appender.xml" />
 
         <Async name="AsyncLogToSlack" includeLocation="true">
             <AppenderRef ref="LogToSlack"/>

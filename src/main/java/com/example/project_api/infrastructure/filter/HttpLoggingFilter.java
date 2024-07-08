@@ -18,6 +18,7 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.UUID;
 
 @WebFilter(urlPatterns = "/api/*")
 @RequiredArgsConstructor
@@ -29,6 +30,8 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest httpServletRequest,
                                     HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
+        final UUID uuid = UUID.randomUUID();
+        MDC.put("request_id", uuid.toString());
 
         ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(httpServletRequest);
         ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(httpServletResponse);
@@ -50,6 +53,7 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
             put("body", getResponseBody(wrappedResponse));
         }}));
 
+        MDC.clear();
         wrappedResponse.copyBodyToResponse();
     }
 

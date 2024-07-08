@@ -1,5 +1,10 @@
-spring.application.name: project-api
 server.port: 9001
+spring:
+  application:
+    name: project-api
+  mvc:
+    pathmatch:
+      use-trailing-slash: true
 
 appkey:
   location: secret-keys/setcret-keys
