@@ -64,7 +64,7 @@
         </RollingFile>
 
         <SlackAppender name="LogToSlack"
-               url="https://hooks.slack.com/services/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"
+               url="https://hooks.slack.com/services/{{your-domain}}"
                channel="#test"
                username="dhkang">
             <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
